@@ -27,6 +27,111 @@ canvas {
   display: block;
 }
 
+button,
+input {
+  font: inherit;
+}
+
+.hidden {
+  display: none !important;
+}
+
+#menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: radial-gradient(circle at top, rgba(149, 223, 255, 0.24), rgba(5, 9, 16, 0.86));
+}
+
+.menu-card {
+  width: min(100%, 460px);
+  padding: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 20px;
+  background: rgba(14, 21, 34, 0.84);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(16px);
+}
+
+.menu-card h1 {
+  margin: 0 0 10px;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+}
+
+.menu-card p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.menu-field {
+  margin-top: 18px;
+}
+
+.menu-field label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.92rem;
+  color: rgba(255, 255, 255, 0.84);
+}
+
+.menu-field input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 12px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  outline: none;
+}
+
+.menu-field input:focus {
+  border-color: rgba(255, 247, 168, 0.65);
+  box-shadow: 0 0 0 3px rgba(255, 247, 168, 0.12);
+}
+
+.menu-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.menu-button {
+  padding: 13px 16px;
+  border: 0;
+  border-radius: 14px;
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+}
+
+.menu-button:hover {
+  transform: translateY(-2px);
+}
+
+.menu-button:active {
+  transform: translateY(0);
+}
+
+.menu-button.primary {
+  background: linear-gradient(135deg, #72d94f, #4fb83b);
+  box-shadow: 0 14px 30px rgba(79, 184, 59, 0.24);
+}
+
+.menu-button.secondary {
+  background: linear-gradient(135deg, #4d7bff, #3559d2);
+  box-shadow: 0 14px 30px rgba(53, 89, 210, 0.24);
+}
+
+.menu-note {
+  margin-top: 14px !important;
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.72) !important;
+}
+
 #ui {
   position: fixed;
   inset: 0;
@@ -64,7 +169,7 @@ canvas {
   position: absolute;
   left: 24px;
   top: 20px;
-  max-width: 360px;
+  max-width: 370px;
   padding: 14px 16px;
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 14px;
@@ -72,9 +177,21 @@ canvas {
   backdrop-filter: blur(8px);
 }
 
-#hud h1 {
-  margin: 0 0 8px;
+#hud h2 {
+  margin: 0 0 6px;
   font-size: 1rem;
+}
+
+#mode-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.84rem;
 }
 
 #hud p,
@@ -87,6 +204,12 @@ canvas {
 #hud ul {
   margin: 8px 0 0;
   padding-left: 18px;
+}
+
+#network-note {
+  margin-top: 10px !important;
+  color: rgba(255, 255, 255, 0.72) !important;
+  font-size: 0.82rem !important;
 }
 
 #status {
@@ -105,6 +228,7 @@ canvas {
 }
 
 .slot {
+  position: relative;
   width: 64px;
   height: 64px;
   display: grid;
@@ -130,9 +254,8 @@ canvas {
 
 .slot span {
   position: absolute;
-  align-self: start;
-  justify-self: start;
-  margin: 8px;
+  top: 8px;
+  left: 8px;
   font-size: 0.78rem;
   color: rgba(255, 255, 255, 0.72);
 }
@@ -142,15 +265,32 @@ canvas {
   inset: 0;
   display: grid;
   place-items: center;
+  padding: 24px;
   background: rgba(6, 10, 18, 0.35);
-  font-size: 1rem;
   color: #fff;
   text-align: center;
-  padding: 24px;
+  pointer-events: auto;
+  cursor: pointer;
 }
 
-#focus-overlay.hidden {
-  display: none;
+#focus-card {
+  max-width: 420px;
+  padding: 20px 22px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 18px;
+  background: rgba(13, 19, 31, 0.72);
+  box-shadow: 0 20px 70px rgba(0, 0, 0, 0.24);
+}
+
+#focus-card strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 1.02rem;
+}
+
+#focus-card p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.82);
 }
 
 kbd {
@@ -159,4 +299,26 @@ kbd {
   background: rgba(255, 255, 255, 0.14);
   border: 1px solid rgba(255, 255, 255, 0.18);
   font: inherit;
+}
+
+@media (max-width: 720px) {
+  .menu-actions {
+    grid-template-columns: 1fr;
+  }
+
+  #hud {
+    left: 16px;
+    right: 16px;
+    max-width: none;
+  }
+
+  #hotbar {
+    gap: 8px;
+    bottom: 16px;
+  }
+
+  .slot {
+    width: 56px;
+    height: 56px;
+  }
 }
