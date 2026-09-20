@@ -74,7 +74,7 @@ bookmarkItems.addEventListener('click', (event) => {
     return;
   }
 
-  navigateCurrent(createPreviewEntry(button.dataset.bookmarkUrl, button.dataset.bookmarkTitle || button.textContent.trim()));
+  submitInput(button.dataset.bookmarkUrl || button.dataset.bookmarkTitle || button.textContent.trim());
 });
 
 contentArea.addEventListener('submit', (event) => {
@@ -118,10 +118,13 @@ function loadState() {
       return createInitialState();
     }
 
+    const tabs = parsed.tabs;
+    const activeTabId = tabs.some((tab) => tab.id === parsed.activeTabId) ? parsed.activeTabId : tabs[0].id;
+
     return {
-      activeTabId: parsed.activeTabId,
-      nextTabId: Number(parsed.nextTabId) || parsed.tabs.length + 1,
-      tabs: parsed.tabs,
+      activeTabId,
+      nextTabId: Number(parsed.nextTabId) || tabs.length + 1,
+      tabs,
       bookmarks: Array.isArray(parsed.bookmarks) ? parsed.bookmarks : [],
       recent: Array.isArray(parsed.recent) ? parsed.recent : [],
     };
@@ -132,7 +135,11 @@ function loadState() {
 }
 
 function saveState() {
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  try {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch (error) {
+    console.warn('Unable to save state in localStorage.', error);
+  }
 }
 
 function createInitialState() {

@@ -5,10 +5,10 @@ Make Browser is a polished, self-contained browser-style web app built with plai
 ## Run it
 
 ### Option 1: Open directly
-- Open `/home/runner/work/you-shall-make-it/you-shall-make-it/index.html` in a modern browser.
+- From the project root, open `index.html` in a modern browser.
 
 ### Option 2: Serve locally
-If you prefer a local server, run one of the following commands from `/home/runner/work/you-shall-make-it/you-shall-make-it`:
+If you prefer a local server, run the following command from the project root:
 
 ```bash
 python3 -m http.server 8000
