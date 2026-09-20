@@ -26,6 +26,7 @@ const reloadButton = document.getElementById('reloadButton');
 const homeButton = document.getElementById('homeButton');
 const newTabButton = document.getElementById('newTabButton');
 const homeTemplate = document.getElementById('homeTemplate');
+const statusRegion = document.getElementById('statusRegion');
 
 let state = loadState();
 render();
@@ -125,7 +126,7 @@ function loadState() {
       activeTabId,
       nextTabId: Number(parsed.nextTabId) || tabs.length + 1,
       tabs,
-      bookmarks: Array.isArray(parsed.bookmarks) ? parsed.bookmarks : [],
+      bookmarks: Array.isArray(parsed.bookmarks) ? parsed.bookmarks.filter((bookmark) => bookmark.url !== HOME_URL) : [],
       recent: Array.isArray(parsed.recent) ? parsed.recent : [],
     };
   } catch (error) {
@@ -306,7 +307,9 @@ function normalizeDestination(rawValue) {
     return null;
   }
 
-  if (value.toLowerCase() === HOME_URL) {
+  const lowerValue = value.toLowerCase();
+
+  if (lowerValue === HOME_URL) {
     return createHomeEntry();
   }
 
@@ -322,7 +325,7 @@ function normalizeDestination(rawValue) {
     return createPreviewEntry(parsed.toString());
   } catch (error) {
     if (looksLikeDomain(value)) {
-      const protocol = value.startsWith('localhost') || /^\d{1,3}(?:\.\d{1,3}){3}/.test(value) ? 'http://' : 'https://';
+      const protocol = lowerValue.startsWith('localhost') || /^\d{1,3}(?:\.\d{1,3}){3}/.test(value) ? 'http://' : 'https://';
       return createPreviewEntry(`${protocol}${value}`);
     }
     return createSearchEntry(value);
@@ -335,6 +338,10 @@ function looksLikeDomain(value) {
 
 function toggleBookmark() {
   const entry = currentEntry();
+  if (entry.displayUrl === HOME_URL) {
+    return;
+  }
+
   const index = state.bookmarks.findIndex((bookmark) => bookmark.url === entry.displayUrl);
   if (index >= 0) {
     state.bookmarks.splice(index, 1);
@@ -357,6 +364,7 @@ function render() {
   renderControls();
   renderBookmarks();
   renderContent();
+  announceCurrentEntry();
 }
 
 function renderTabs() {
@@ -386,9 +394,11 @@ function renderControls() {
   backButton.disabled = tab.historyIndex === 0;
   forwardButton.disabled = tab.historyIndex === tab.history.length - 1;
   const bookmarked = state.bookmarks.some((bookmark) => bookmark.url === entry.displayUrl);
-  bookmarkButton.classList.toggle('active', bookmarked);
-  bookmarkButton.textContent = bookmarked ? '★' : '☆';
-  bookmarkButton.title = bookmarked ? 'Remove bookmark' : 'Bookmark this page';
+  const bookmarkable = entry.displayUrl !== HOME_URL;
+  bookmarkButton.disabled = !bookmarkable;
+  bookmarkButton.classList.toggle('active', bookmarkable && bookmarked);
+  bookmarkButton.textContent = bookmarkable && bookmarked ? '★' : '☆';
+  bookmarkButton.title = bookmarkable ? (bookmarked ? 'Remove bookmark' : 'Bookmark this page') : 'Home is always available and does not need a bookmark';
 }
 
 function renderBookmarks() {
@@ -536,4 +546,9 @@ function escapeHtml(value) {
 
 function escapeAttribute(value) {
   return escapeHtml(value);
+}
+
+function announceCurrentEntry() {
+  const entry = currentEntry();
+  statusRegion.textContent = entry.type === 'home' ? 'Home page loaded' : `${entry.title} loaded`;
 }
