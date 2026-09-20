@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Make Browser</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <div class="browser-window" aria-label="Make Browser window">
+        <header class="browser-chrome">
+          <div class="tab-strip-row">
+            <div class="tab-strip" id="tabStrip" role="tablist" aria-label="Browser tabs"></div>
+            <button
+              class="icon-button new-tab-button"
+              id="newTabButton"
+              type="button"
+              aria-label="Open new tab"
+              title="New tab"
+            >
+              +
+            </button>
+          </div>
+
+          <div class="toolbar-row">
+            <div class="nav-controls" aria-label="Navigation controls">
+              <button class="icon-button" id="backButton" type="button" aria-label="Go back" title="Back">
+                &#8592;
+              </button>
+              <button class="icon-button" id="forwardButton" type="button" aria-label="Go forward" title="Forward">
+                &#8594;
+              </button>
+              <button class="icon-button" id="reloadButton" type="button" aria-label="Reload current view" title="Reload">
+                &#8635;
+              </button>
+              <button class="icon-button" id="homeButton" type="button" aria-label="Go to home page" title="Home">
+                &#8962;
+              </button>
+            </div>
+
+            <form class="address-form" id="addressForm" role="search" aria-label="Address and search bar">
+              <label class="sr-only" for="addressInput">Address or search</label>
+              <input
+                id="addressInput"
+                class="address-input"
+                type="text"
+                inputmode="url"
+                autocomplete="off"
+                spellcheck="false"
+                placeholder="Search the web or enter an address"
+                aria-label="Address or search"
+              />
+            </form>
+
+            <button
+              class="icon-button star-button"
+              id="bookmarkButton"
+              type="button"
+              aria-label="Toggle bookmark for current page"
+              title="Bookmark this page"
+            >
+              ☆
+            </button>
+          </div>
+
+          <nav class="bookmarks-bar" aria-label="Bookmarks bar">
+            <div class="bookmark-items" id="bookmarkItems"></div>
+          </nav>
+        </header>
+
+        <main class="content-area" id="contentArea" tabindex="-1" aria-live="polite"></main>
+      </div>
+    </div>
+
+    <template id="homeTemplate">
+      <section class="home-page">
+        <div class="hero-card panel">
+          <p class="eyebrow">Welcome to Make Browser</p>
+          <h1>A friendly browser-style demo you can open from a single file.</h1>
+          <p class="hero-copy">
+            Search the web, try shortcut sites, manage tabs, and bookmark favorites. External pages open as
+            safe previews because this app runs entirely as a static site.
+          </p>
+          <form class="home-search" id="homeSearchForm">
+            <label class="sr-only" for="homeSearchInput">Search the web</label>
+            <input id="homeSearchInput" type="text" placeholder="Search with DuckDuckGo or type a site" />
+            <button type="submit">Search</button>
+          </form>
+          <p class="meta-note">Tip: press Ctrl/Cmd + L to jump to the address bar.</p>
+        </div>
+
+        <section class="panel">
+          <div class="section-heading">
+            <h2>Shortcuts</h2>
+            <p>Popular destinations ready to drop into the address bar.</p>
+          </div>
+          <div class="shortcut-grid" id="shortcutGrid"></div>
+        </section>
+
+        <section class="home-columns">
+          <section class="panel">
+            <div class="section-heading">
+              <h2>Recently visited</h2>
+              <p>Quickly reopen recent destinations from this demo session.</p>
+            </div>
+            <div class="recent-list" id="recentList"></div>
+          </section>
+
+          <section class="panel">
+            <div class="section-heading">
+              <h2>Static demo tips</h2>
+              <p>What Make Browser can and cannot do.</p>
+            </div>
+            <ul class="tips-list">
+              <li>Typed text becomes a DuckDuckGo search.</li>
+              <li>Plain domain names are normalized to secure <code>https://</code> URLs.</li>
+              <li>Unsupported or blocked destinations show a preview instead of a blank page.</li>
+              <li>Bookmarks live in the bar above and can be toggled with the star button.</li>
+            </ul>
+          </section>
+        </section>
+      </section>
+    </template>
+
+    <script src="app.js"></script>
+  </body>
+</html>
