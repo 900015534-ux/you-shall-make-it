@@ -334,6 +334,11 @@ function normalizeDestination(rawValue) {
     return createSearchEntry(value);
   }
 
+  if (looksLikeBareHostInput(value)) {
+    const protocol = lowerValue.startsWith('localhost') || isValidIpv4Host(value) ? 'http://' : 'https://';
+    return createPreviewEntry(`${protocol}${value}`);
+  }
+
   try {
     const parsed = new URL(value);
     if (!['http:', 'https:'].includes(parsed.protocol)) {
@@ -341,21 +346,31 @@ function normalizeDestination(rawValue) {
     }
     return createPreviewEntry(parsed.toString());
   } catch (error) {
-    if (looksLikeDomain(value)) {
-      const protocol = lowerValue.startsWith('localhost') || isIpv4LikeHost(value) ? 'http://' : 'https://';
-      return createPreviewEntry(`${protocol}${value}`);
-    }
     return createSearchEntry(value);
   }
 }
 
-function looksLikeDomain(value) {
+function looksLikeBareHostInput(value) {
   const lowerValue = value.toLowerCase();
-  return value.includes('.') || lowerValue.startsWith('localhost') || isIpv4LikeHost(value);
+  if (/^[\d.]+(?::\d+)?(?:[/?#].*)?$/.test(value)) {
+    return isValidIpv4Host(value);
+  }
+
+  return /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?::\d+)?(?:[/?#].*)?$/i.test(value)
+    || /^localhost(?::\d+)?(?:[/?#].*)?$/i.test(lowerValue)
+    || isValidIpv4Host(value);
 }
 
-function isIpv4LikeHost(value) {
-  return /^\d{1,3}(?:\.\d{1,3}){3}(?::\d+)?(?:\/.*)?$/.test(value);
+function isValidIpv4Host(value) {
+  const match = value.match(/^(\d{1,3}(?:\.\d{1,3}){3})(?::\d+)?(?:\/.*)?$/);
+  if (!match) {
+    return false;
+  }
+
+  return match[1].split('.').every((octet) => {
+    const number = Number(octet);
+    return number >= 0 && number <= 255;
+  });
 }
 
 function toggleBookmark() {
@@ -398,7 +413,7 @@ function renderTabs() {
       const selected = tab.id === activeId;
       return `
         <div class="tab ${selected ? 'active' : ''}" role="presentation">
-          <button class="tab-activate" type="button" role="tab" aria-selected="${selected}" aria-controls="contentArea" data-tab-id="${tab.id}" title="${escapeHtml(entry.title)}">
+          <button class="tab-activate" type="button" aria-pressed="${selected}" data-tab-id="${tab.id}" title="${escapeHtml(entry.title)}">
             <span aria-hidden="true">${entry.type === 'home' ? '⌂' : '◉'}</span>
             <span class="tab-title">${title}</span>
           </button>
