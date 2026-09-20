@@ -244,15 +244,15 @@ function openTab(entry = createHomeEntry()) {
 }
 
 function closeTab(tabId) {
+  const index = state.tabs.findIndex((tab) => tab.id === tabId);
+  if (index === -1) {
+    return;
+  }
+
   if (state.tabs.length === 1) {
     state.tabs[0] = createTab(state.tabs[0].id);
     state.activeTabId = state.tabs[0].id;
     persistAndRender();
-    return;
-  }
-
-  const index = state.tabs.findIndex((tab) => tab.id === tabId);
-  if (index === -1) {
     return;
   }
 
@@ -362,7 +362,7 @@ function looksLikeBareHostInput(value) {
 }
 
 function isValidIpv4Host(value) {
-  const match = value.match(/^(\d{1,3}(?:\.\d{1,3}){3})(?::\d+)?(?:\/.*)?$/);
+  const match = value.match(/^(\d{1,3}(?:\.\d{1,3}){3})(?::\d+)?(?:[/?#].*)?$/);
   if (!match) {
     return false;
   }
@@ -413,7 +413,7 @@ function renderTabs() {
       const selected = tab.id === activeId;
       return `
         <div class="tab ${selected ? 'active' : ''}" role="presentation">
-          <button class="tab-activate" type="button" aria-pressed="${selected}" data-tab-id="${tab.id}" title="${escapeHtml(entry.title)}">
+          <button class="tab-activate" type="button" role="tab" aria-selected="${selected}" tabindex="${selected ? '0' : '-1'}" data-tab-id="${tab.id}" title="${escapeHtml(entry.title)}">
             <span aria-hidden="true">${entry.type === 'home' ? '⌂' : '◉'}</span>
             <span class="tab-title">${title}</span>
           </button>
