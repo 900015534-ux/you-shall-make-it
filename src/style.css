@@ -1,0 +1,162 @@
+:root {
+  color: #f4f4f4;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  background: #87ceeb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background: linear-gradient(#87ceeb 0%, #b5e3ff 55%, #d9f1ff 100%);
+}
+
+canvas {
+  display: block;
+}
+
+#ui {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+#crosshair {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  transform: translate(-50%, -50%);
+}
+
+#crosshair::before,
+#crosshair::after {
+  content: '';
+  position: absolute;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.7);
+}
+
+#crosshair::before {
+  inset: 7px 0;
+  height: 2px;
+}
+
+#crosshair::after {
+  inset: 0 7px;
+  width: 2px;
+}
+
+#hud {
+  position: absolute;
+  left: 24px;
+  top: 20px;
+  max-width: 360px;
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 14px;
+  background: rgba(18, 24, 38, 0.62);
+  backdrop-filter: blur(8px);
+}
+
+#hud h1 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+
+#hud p,
+#hud li {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.9rem;
+}
+
+#hud ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+}
+
+#status {
+  margin-top: 10px;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.74);
+}
+
+#hotbar {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  display: flex;
+  gap: 10px;
+  transform: translateX(-50%);
+}
+
+.slot {
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-radius: 14px;
+  background: rgba(15, 22, 34, 0.62);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.slot.active {
+  transform: translateY(-4px);
+  border-color: #fff7a8;
+  box-shadow: 0 12px 24px rgba(255, 247, 168, 0.2);
+}
+
+.swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.55);
+}
+
+.slot span {
+  position: absolute;
+  align-self: start;
+  justify-self: start;
+  margin: 8px;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+#focus-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(6, 10, 18, 0.35);
+  font-size: 1rem;
+  color: #fff;
+  text-align: center;
+  padding: 24px;
+}
+
+#focus-overlay.hidden {
+  display: none;
+}
+
+kbd {
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  font: inherit;
+}
