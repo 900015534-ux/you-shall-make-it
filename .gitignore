@@ -1,2 +1,11 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+
+# Temporary files
+tmp/
+
 # Google App Engine generated folder
 appengine-generated/

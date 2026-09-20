@@ -10,7 +10,7 @@ app.innerHTML = `
       <p>Prototype a tiny Minecraft-like sandbox in your browser.</p>
       <ul>
         <li><kbd>Click</kbd> to capture the mouse</li>
-        <li><kbd>WASD</kbd> move, <kbd>Space</kbd> jump, <kbd>Shift</kbd> descend while flying is disabled</li>
+        <li><kbd>WASD</kbd> move, <kbd>Space</kbd> jump, <kbd>Esc</kbd> release the cursor</li>
         <li><kbd>Left Click</kbd> break, <kbd>Right Click</kbd> place</li>
         <li><kbd>1-5</kbd> switch blocks, <kbd>R</kbd> reset save</li>
       </ul>
@@ -575,6 +575,10 @@ animate()
 
 window.addEventListener('resize', resize)
 window.addEventListener('beforeunload', () => world.saveState())
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') world.saveState()
+})
+setInterval(() => world.saveState(), 2000)
 window.addEventListener('contextmenu', (event) => event.preventDefault())
 window.addEventListener('keydown', (event) => {
   keys.add(event.code)
