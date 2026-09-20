@@ -109,7 +109,7 @@ code {
   transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
 }
 
-.tab:has(.tab-activate[aria-selected="true"]) {
+.tab.active {
   background: var(--tab-active);
   border-color: rgba(125, 211, 252, 0.35);
   color: var(--text);

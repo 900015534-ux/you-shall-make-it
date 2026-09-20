@@ -27,6 +27,7 @@ const homeButton = document.getElementById('homeButton');
 const newTabButton = document.getElementById('newTabButton');
 const homeTemplate = document.getElementById('homeTemplate');
 const statusRegion = document.getElementById('statusRegion');
+let saveTimer = null;
 
 let state = loadState();
 render();
@@ -105,7 +106,7 @@ contentArea.addEventListener('click', (event) => {
   }
 });
 
-window.addEventListener('beforeunload', saveState);
+window.addEventListener('beforeunload', flushStateSave);
 
 function loadState() {
   try {
@@ -141,6 +142,22 @@ function saveState() {
   } catch (error) {
     console.warn('Unable to save state in localStorage.', error);
   }
+}
+
+function scheduleStateSave() {
+  window.clearTimeout(saveTimer);
+  saveTimer = window.setTimeout(() => {
+    saveState();
+    saveTimer = null;
+  }, 120);
+}
+
+function flushStateSave() {
+  if (saveTimer !== null) {
+    window.clearTimeout(saveTimer);
+    saveTimer = null;
+  }
+  saveState();
 }
 
 function createInitialState() {
@@ -325,7 +342,7 @@ function normalizeDestination(rawValue) {
     return createPreviewEntry(parsed.toString());
   } catch (error) {
     if (looksLikeDomain(value)) {
-      const protocol = lowerValue.startsWith('localhost') || /^\d{1,3}(?:\.\d{1,3}){3}/.test(value) ? 'http://' : 'https://';
+      const protocol = lowerValue.startsWith('localhost') || isIpv4LikeHost(value) ? 'http://' : 'https://';
       return createPreviewEntry(`${protocol}${value}`);
     }
     return createSearchEntry(value);
@@ -333,7 +350,12 @@ function normalizeDestination(rawValue) {
 }
 
 function looksLikeDomain(value) {
-  return value.includes('.') || value.startsWith('localhost') || /^\d{1,3}(?:\.\d{1,3}){3}(?::\d+)?(?:\/.*)?$/.test(value);
+  const lowerValue = value.toLowerCase();
+  return value.includes('.') || lowerValue.startsWith('localhost') || isIpv4LikeHost(value);
+}
+
+function isIpv4LikeHost(value) {
+  return /^\d{1,3}(?:\.\d{1,3}){3}(?::\d+)?(?:\/.*)?$/.test(value);
 }
 
 function toggleBookmark() {
@@ -355,7 +377,7 @@ function toggleBookmark() {
 }
 
 function persistAndRender() {
-  saveState();
+  scheduleStateSave();
   render();
 }
 
@@ -375,7 +397,7 @@ function renderTabs() {
       const title = escapeHtml(shortTitle(entry));
       const selected = tab.id === activeId;
       return `
-        <div class="tab" role="presentation">
+        <div class="tab ${selected ? 'active' : ''}" role="presentation">
           <button class="tab-activate" type="button" role="tab" aria-selected="${selected}" aria-controls="contentArea" data-tab-id="${tab.id}" title="${escapeHtml(entry.title)}">
             <span aria-hidden="true">${entry.type === 'home' ? '⌂' : '◉'}</span>
             <span class="tab-title">${title}</span>
